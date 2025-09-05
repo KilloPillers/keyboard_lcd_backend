@@ -3,7 +3,6 @@ const express = require("express");
 const http = require("http");
 const { Server } = require("socket.io");
 const cors = require("cors");
-const { crc32 } = require("zlib");
 
 const app = express();
 app.use(cors());
@@ -34,6 +33,7 @@ io.on("connection", (socket) => {
       serverByteArray[i] = clientByteArray[i];
       // serverByteArray[i] |= clientByteArray[i];
     }
+    console.log(clientByteArray);
     socket.broadcast.emit("DrawEvent", serverByteArray);
     console.log("Sending DrawEvent:", serverByteArray.length, serverByteArray);
   });
