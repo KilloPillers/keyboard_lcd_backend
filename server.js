@@ -4,8 +4,23 @@ const http = require("http");
 const { Server } = require("socket.io");
 const cors = require("cors");
 
+const allowedOrigins =
+  process.env.NODE_ENV === "production"
+    ? ["https://keyboard.juan-alvarez.dev"]
+    : ["http://localhost:5173"];
+
+var corsOptions = {
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error("CORS not allowed for this origin: " + origin));
+    }
+  },
+};
+
 const app = express();
-app.use(cors());
+app.use(cors(corsOptions));
 
 const server = http.createServer(app);
 
@@ -31,7 +46,6 @@ io.on("connection", (socket) => {
   socket.on("DrawEvent", (clientByteArray) => {
     for (let i = 0; i < serverByteArray.length; i++) {
       serverByteArray[i] = clientByteArray[i];
-      // serverByteArray[i] |= clientByteArray[i];
     }
     console.log(clientByteArray);
     socket.broadcast.emit("DrawEvent", serverByteArray);
@@ -43,7 +57,7 @@ io.on("connection", (socket) => {
   });
 });
 
-const PORT = 3000;
+const PORT = process.env.PORT;
 server.listen(PORT, () => {
   console.log(`Server is running at http://localhost:${PORT}`);
 });
