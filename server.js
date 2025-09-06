@@ -30,10 +30,7 @@ const LCD_WIDTH = 128;
 var serverByteArray = new Uint8Array((LCD_HEIGHT * LCD_WIDTH) / 8);
 
 const io = new Server(server, {
-  cors: {
-    origin: "http://localhost:5173",
-    methods: ["GET", "POST"],
-  },
+  cors: corsOptions,
 });
 
 io.on("connection", (socket) => {
@@ -59,5 +56,5 @@ io.on("connection", (socket) => {
 
 const PORT = process.env.PORT;
 server.listen(PORT, () => {
-  console.log(`Server is running at http://localhost:${PORT}`);
+  console.log(`Server is running on port:${PORT}`);
 });
